@@ -7,7 +7,7 @@ Covenants which replicate themselves into the UTXOs where they are spent to are 
 
 ## Why are covenants interesting?
 Generalized covenants would enable a ton of new applications for scripts, such as:
-- Scripts with unbounded length (including arbitraryly sized multisigs)
+- Scripts with unbounded length (including arbitrary sized multisigs)
 - Turing complete contracts
 - Transaction-level MAST (a really coarse-grained version of MAST that would split code paths at the script/transaction level)
 - Drivechain-like two-way pegs
@@ -60,7 +60,7 @@ For more information, see [BIP119](https://github.com/bitcoin/bips/blob/master/b
 
 For more information, see the [paper](https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf) and [article](https://blockstream.com/2016/11/02/en-covenants-in-elements-alpha/) about it.
 
-**Note**: This opcode has been implemented inside Elements, the blockchain layer upon which Blockstream's Liquid sidechain is built. Furthermore, an opcode very similiar to it called [OP\_CHECKDATASIG](https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/op_checkdatasig.md) has been implemented and deployed in Bitcoin Cash.
+**Note**: This opcode has been implemented inside Elements, the blockchain layer upon which Blockstream's Liquid sidechain is built. Furthermore, an opcode very similar to it called [OP\_CHECKDATASIG](https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/op_checkdatasig.md) has been implemented and deployed in Bitcoin Cash.
 
 ### Signature costruction 
 Approaches based on constructing a public key so that only a single signature for it is known.

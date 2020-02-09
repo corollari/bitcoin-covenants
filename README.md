@@ -24,6 +24,9 @@ In other words:
 
 > Those who don't know history are doomed to repeat it
 
+## TL;DR
+Covenants are currently available in Bitcoin Cash and the Liquid sidechain. For Bitcoin, it's possible to build a very restricted kind of covenants using a trusted setup but general covenants are not viable currently. Nevertheless, there's several proposals for protocol upgrades that would enable them, the most active ones being SIGHASH\_ANYPREVOUT/NOINPUT and OP\_CHECKTEMPLATEVERIFY.
+
 ## Opcode based covenants
 ### OP\_CHECKOUTPUTVERIFY
 One of the earliest covenant proposals, [this paper](https://maltemoeser.de/paper/covenants.pdf) describes a new opcode to be added to the Bitcoin protocol, this new opcode takes three arguments `(index, value, pattern)` and returns true if and only if the following conditions holdfor the `index`-th output of the transaction that is trying to spend the UTXO:

@@ -78,6 +78,7 @@ Specifically, this opcode puts together the following fields:
 - Number of outputs
 - Outputs
 - Index of the input being verified currently
+
 serializes them together, hashes them and compares the hash with an element in the stack, verifying the transaction if the values are equal.
 <!--Some of the values are hashed before serialization, this is not specified here to keep things simple. Read the BIP!-->
 

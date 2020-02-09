@@ -25,7 +25,9 @@ In other words:
 > Those who don't know history are doomed to repeat it
 
 ## TL;DR
-Covenants are currently available in Bitcoin Cash and the Liquid sidechain. For Bitcoin, it's possible to build a very restricted kind of covenants using a trusted setup but general covenants are not viable currently. Nevertheless, there's several proposals for protocol upgrades that would enable them, the most active ones being SIGHASH\_ANYPREVOUT/NOINPUT and OP\_CHECKTEMPLATEVERIFY.
+Covenants are currently available in Bitcoin Cash and the Liquid sidechain.  
+
+For Bitcoin, it's possible to build a very restricted kind of covenants using a trusted setup but general covenants are not viable currently. Nevertheless, there's several proposals for protocol upgrades that would enable them, the most active ones being SIGHASH\_ANYPREVOUT/NOINPUT and OP\_CHECKTEMPLATEVERIFY.
 
 ## Opcode based covenants
 ### OP\_CHECKOUTPUTVERIFY
@@ -69,6 +71,7 @@ See the [BIP](https://github.com/JeremyRubin/bips/blob/op-checkoutputshashverify
 
 ### OP\_CHECKTEMPLATEVERIFY
 Previously known as OP_SECURETHEBAG, this is a new version of OP\_CHECKOUTPUTSHASHVERIFY that enforces non-malleability of transactions by including several other parts of the transaction into the hash, whereas OP\_CHECKOUTPUTSHASHVERIFY only included the outputs.  
+
 Specifically, this opcode puts together the following fields:
 - Version bits
 - nLockTime

@@ -85,7 +85,7 @@ For more information, see [BIP119](https://github.com/bitcoin/bips/blob/master/b
 
 ## Signature based covenants
 ### A primer on signatures
-The following is a short explanation on Schnorr signatures, Bitcoin doesn't use this kind of signatures (there's a proposal to include them in the protocol tho) but instead uses ECDSA, which is a bit more complicated than Schnorr but conceptually the same:
+The following is a short explanation on Schnorr signatures, Bitcoin doesn't use this kind of signatures (there's a proposal to include them in the protocol though) but instead uses ECDSA, which is a bit more complicated than Schnorr but conceptually the same:
 
 ### OP\_CHECKSIGFROMSTACK
 

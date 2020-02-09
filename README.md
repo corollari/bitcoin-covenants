@@ -14,6 +14,8 @@ Generalized covenants would enable a ton of new applications for scripts, such a
 
 Several more use cases are described [on the OP\_CTV page](https://utxos.org/uses/).
 
+**Note**: Not all the covenants described in this document are generalized ones, as several are heavily restricted, therefore the use-cases that each covenant provides are not all the same.
+
 ## Why was this created?
 Because I spent a whole month researching ways to create covenants with the current capabilities of Bitcoin's Script and, after thinking I had found a beakthrough, I discovered that the same system I had thought about had already been described a few months ago in one of the thousands of posts of the bitcoin mailing list.
 The goal of this website is to provide information on bitcoin covenants so that other people don't end up wasting their time like I did.
@@ -24,7 +26,7 @@ In other words:
 
 ## Opcode based covenants
 ### OP\_CHECKOUTPUTVERIFY
-One of the earliest covenant proposals, outlined in [this paper](https://maltemoeser.de/paper/covenants.pdf) describes a new opcode to be added to the Bitcoin protocol, this new opcode takes three arguments `(index, value, pattern)` and returns true if and only if the following conditions holdfor the `index`-th output of the transaction that is trying to spend the UTXO:
+One of the earliest covenant proposals, [this paper](https://maltemoeser.de/paper/covenants.pdf) describes a new opcode to be added to the Bitcoin protocol, this new opcode takes three arguments `(index, value, pattern)` and returns true if and only if the following conditions holdfor the `index`-th output of the transaction that is trying to spend the UTXO:
 - The amount of bitcoin spent on that output is equal to `value`
 - The script attached to the output is equal to `pattern` except for the parts of `pattern` that contain placeholders for public keys and hashes.
 
@@ -50,6 +52,7 @@ This opcode would enable all kind of covenants, but nowadays it has been superse
 Very similar to OP\_CHECKOUTPUTVERIFY, see the [BIP](https://github.com/JeremyRubin/bips/blob/op-checkoutputshashverify/bip-coshv.mediawiki) for more details.
 
 ### OP\_CHECKTEMPLATEVERIFY
+Previously known as OP_SECURETHEBAG, 
 
 For more information, see [BIP119](https://github.com/bitcoin/bips/blob/master/bip-0119.mediawiki) and [the website dedicated to it](https://utxos.org/). 
 

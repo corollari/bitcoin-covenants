@@ -49,15 +49,40 @@ def CheckOutputVerify(tx, index, value, pattern):
 This opcode would enable all kind of covenants, but nowadays it has been superseded by other systems and the probability of it ever getting deployed is null.
 
 ### OP\_CHECKOUTPUTSHASHVERIFY
-Very similar to OP\_CHECKOUTPUTVERIFY, see the [BIP](https://github.com/JeremyRubin/bips/blob/op-checkoutputshashverify/bip-coshv.mediawiki) for more details.
+This opcode, which was proposed as an extension to tapscript and aims at being as simple as possible, just serializes the outputs of a transaction, hashes the result twice and compares it with an argument:
+```python
+def CheckOutputsHashVerify(tx, outputsHash):
+	if sha256(sha256(tx.outputs)) == outputsHash:
+		return True
+	else:
+		return False
+```
+
+Something uncommon about this opcode is the fact that it's argument is provided in Script after OP\_CHECKOUTPUTSHASHVERIFY, not before. This behaviour is completely different from other opcodes', which take arguments from the stack, in order to prevent the output hashes from being constructed in Script.
+
+The proposal was superseded by OP\_CHECKTEMPLATEVERIFY, which modifies the behaviour to enforce non-malleability in transactions that spend UTXOs encumbered by the covenant and changes the deployment scheme to the classic NOP-replacement instead of a tapscrip extension.
+
+See the [BIP](https://github.com/JeremyRubin/bips/blob/op-checkoutputshashverify/bip-coshv.mediawiki) for more details.
 
 ### OP\_CHECKTEMPLATEVERIFY
-Previously known as OP_SECURETHEBAG, 
+Previously known as OP_SECURETHEBAG, this is a new version of OP\_CHECKOUTPUTSHASHVERIFY that enforces non-malleability of transactions by including several other parts of the transaction into the hash, whereas OP\_CHECKOUTPUTSHASHVERIFY only included the outputs.  
+Specifically, this opcode puts together the following fields:
+- Version bits
+- nLockTime
+- Input's scriptSig
+- Number of inputs
+- nSequence
+- Number of outputs
+- Outputs
+- Index of the input being verified currently
+serializes them together, hashes them and compares the hash with an element in the stack, verifying the transaction if the values are equal.
+<!--Some of the values are hashed before serialization, this is not specified here to keep things simple. Read the BIP!-->
 
 For more information, see [BIP119](https://github.com/bitcoin/bips/blob/master/bip-0119.mediawiki) and [the website dedicated to it](https://utxos.org/). 
 
 ## Signature based covenants
 ### A primer on signatures
+The following is a short explanation on Schnorr signatures, Bitcoin doesn't use this kind of signatures (there's a proposal to include them in the protocol tho) but instead uses ECDSA, which is a bit more complicated than Schnorr but conceptually the same:
 
 ### OP\_CHECKSIGFROMSTACK
 
@@ -67,6 +92,13 @@ For more information, see the [paper](https://fc17.ifca.ai/bitcoin/papers/bitcoi
 
 ### Signature costruction 
 Approaches based on constructing a public key so that only a single signature for it is known.
+
+Given a curve €C€, a generator point €G in C€, a private key €p€ and a nonce €k€, the public key €P in C€ is usually computed as €P=pG€ and, given a message €m€ a signature for it is created by computing €K=kG, s = k-hash(m, K)*p€ and constructing €(s, K, m)€, which along with €P€ enables the verification of the signature.
+The construction described allows the owner of Instead of constructing the signature in this way, this proposal uses the following algorithm:
+Given a transaction input  
+1. Construct a transaction 
+2. Compute a definition of €s in ZZ_p€ and €K in C€ in a deterministic way from the message, for example using €s=hash1(m), K=hash2(m)€ (€hash2€ should return a valid point in €C€)
+3. Compute €P€ by solving the equation €sG = K-hash(m, K)*P€
 
 ### Multi-party Computation variant
 

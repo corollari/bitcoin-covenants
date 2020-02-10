@@ -114,17 +114,24 @@ For more information, see the [paper](https://fc17.ifca.ai/bitcoin/papers/bitcoi
 **Note**: This opcode has been implemented inside Elements, the blockchain layer upon which Blockstream's Liquid sidechain is built. Furthermore, an opcode very similar to it called [OP\_CHECKDATASIG](https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/op_checkdatasig.md) has been implemented and deployed in Bitcoin Cash.
 
 ### SIGHASH\_NOINPUT/ANYPREVOUTS
+A kind of somewhat restricted covenants can be created if SIGHASH\_NOINPUT or ANYPREVOUTS is deployed. These covenants are based on creating several transactions beforehand and then constructing public keys for which only a single signature can be computed, making any money sent to that public key only spendable through the transactions defined before.
 
+In other words, someone could create a covenant using the following protocol:
+1. Create a transaction $tx$ spending some funds
+2. Pick a number $s$ and a point $K$ in a deterministic and verifiable way (could also be constants)
+3. Calculate a public key by solving for $P$ in the equation $sG = K - hash(tx)P$, that is computing $P = hash(x)^{-1}(K - sG)$.
+4. Send funds to an address where they can only be spent with a signature of $P$.
+
+Because the private key associated with $P$ is unknown, it's not possible to construct any signatures from it apart from the signature used to compute it, signature which signs the specific transaction $tx$. Therefore $tx$ will be the only transaction that will be able to spend any funds locked in $P$.
+
+Now, the huge problem with this scheme is that to construct the transaction $tx$ , and by extension $P$, you need the txids of the transactions that send money to $P$ (step 4), but to create these transactions you need to know $P$, thus you get locked in an unsolvable cyclic dependency.
+
+SIGHASH_NOINPUT solves this problem by allowing $hash(tx)$ to not commit to the txids of the transaction, therefore enabling the computation of $P$ without any other knowledge apart from the outputs of $tx$.
+
+Check out [the bitcoin-dev post where this scheme was initially described](https://www.mail-archive.com/bitcoin-dev@lists.linuxfoundation.org/msg08075.html) for more details.
 
 ### Signature construction 
-Approaches based on constructing a public key so that only a single signature for it is known.
 
-Given a curve €C€, a generator point €G in C€, a private key €p€ and a nonce €k€, the public key €P in C€ is usually computed as €P=pG€ and, given a message €m€ a signature for it is created by computing €K=kG, s = k-hash(m, K)*p€ and constructing €(s, K, m)€, which along with €P€ enables the verification of the signature.
-The construction described allows the owner of Instead of constructing the signature in this way, this proposal uses the following algorithm:
-Given a transaction input  
-1. Construct a transaction 
-2. Compute a definition of €s in ZZ_p€ and €K in C€ in a deterministic way from the message, for example using €s=hash1(m), K=hash2(m)€ (€hash2€ should return a valid point in €C€)
-3. Compute €P€ by solving the equation €sG = K-hash(m, K)*P€
 
 ### Multi-party Computation variant
 

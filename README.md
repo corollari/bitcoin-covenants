@@ -91,13 +91,25 @@ For more information, see [BIP119](https://github.com/bitcoin/bips/blob/master/b
 
 ## Signature based covenants
 ### A primer on signatures
-The following is a short explanation on Schnorr signatures, Bitcoin doesn't use this kind of signatures (there's a proposal to include them in the protocol though) but instead uses ECDSA, which is a bit more complicated than Schnorr but conceptually the same:
+The following is a short explanation on Schnorr signatures, the signatures used in Bitcoin are not of this type but they are conceptually similar:
+
+<!-- This description of schnorr signatures is not mathematically rigurous, as it is missing a ton of details, it is just meant to offer a didactic explanation, if you want to learn it properly check a proper source -->
+The main idea behind this signatures is that if you have a point $G$ of a elliptic curve and a number $n$ you can easily multiply them together to obtain another point in the curve $n \cdot G=N$ so that guessing $n$ from just $N$ will be really hard, next to impossible.
+
+With that in mind, we can take a number $p$ that will be our private key and calculate $p \cdot G=P$ to obtain a public key $P$ ($G$ is just a picked point in the curve), then given a transaction $tx$ we will sign it by picking a random number $k$, calculating $s = k - hash(tx) \cdot p$ and $K=k \cdot G$, and constructing a signature as $(s, K)$.
+
+With these values, anyone else can verify that such signature is valid by checking that the equality $s \cdot G = K - hash(tx) \cdot P$ holds, as only someone that knows the value $p$ can construct such a signature due to the fact that if someone with no such knowledge tried to compute $s$ they would need to compute the point $S=K- hash(tx) \cdot P$ and reverse the multiplication to obtain a number that when multiplied by $G$ would yield $S$, which we assumed impossible in the first paragraph of this explanation.
+
+The main idea behind this category of covenants (signature based) is that, while transaction information is not directly available inside Script, it is used to construct the value $hash(tx)$ used internally in OP\_CHECKSIG, so it's possible to perform comparisons against it indirectly through hacks in the signatures passed to OP\_CHECKSIG.
 
 ### OP\_CHECKSIGFROMSTACK
+At it's heart, this opcode is really simple, it just takes a message, a public key and a signature and checks if the signature is valid. The interesting bit is that you can use this 
 
 For more information, see the [paper](https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf) and [article](https://blockstream.com/2016/11/02/en-covenants-in-elements-alpha/) about it.
 
 **Note**: This opcode has been implemented inside Elements, the blockchain layer upon which Blockstream's Liquid sidechain is built. Furthermore, an opcode very similar to it called [OP\_CHECKDATASIG](https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/op_checkdatasig.md) has been implemented and deployed in Bitcoin Cash.
+
+### SIGHASH\_NOINPUT/ANYPREVOUTS
 
 ### Signature costruction 
 Approaches based on constructing a public key so that only a single signature for it is known.
@@ -110,6 +122,7 @@ Given a transaction input
 3. Compute €P€ by solving the equation €sG = K-hash(m, K)*P€
 
 ### Multi-party Computation variant
+
 
 ---
 

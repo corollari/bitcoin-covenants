@@ -103,7 +103,11 @@ With these values, anyone else can verify that such signature is valid by checki
 The main idea behind this category of covenants (signature based) is that, while transaction information is not directly available inside Script, it is used to construct the value $hash(tx)$ used internally in OP\_CHECKSIG, so it's possible to perform comparisons against it indirectly through hacks in the signatures passed to OP\_CHECKSIG.
 
 ### OP\_CHECKSIGFROMSTACK
-At it's heart, this opcode is really simple, it just takes a message, a public key and a signature and checks if the signature is valid. The interesting bit is that you can use this 
+At it's heart, this opcode is really simple, it just takes a message, a public key and a signature and checks if the signature is valid. The interesting bit is that you can use this to compare any transaction built inside Script to the transaction that triggered the call and check if they are equal, therefore getting access to all the transaction data that is included inside the hash in OP\_CHECKSIG signatures.
+
+More especifically, this would work by having the verification script (ScriptPubKey) of a UTXO construct (or verify) a serialized transaction, making sure that certain properties are met, such as the outputs being equal to ones defined previously for example, then hash such transaction and run OP\_CHECKSIGFROMSTACK on the resulting hash and the values $(s, K, P)$ taken from the redeem script (ScriptSig) and computed off-chain by the user.
+
+If that signature is valid, then OP\_CHECKSIG would be run with the same values except for the hash, that is the values $(s, K, P)$ used before. If this other opcode also returns true then we can be sure that the transaction spending the UTXO is the same as the one we have constructed (and have enforced our arbitrary conditions on). This is because $s \cdot G = K + hash(tx_{constructed}) \cdot P$ holds if and only if $s \cdot G = K + hash(tx_{real}) \cdot P$ holds.
 
 For more information, see the [paper](https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf) and [article](https://blockstream.com/2016/11/02/en-covenants-in-elements-alpha/) about it.
 
@@ -111,7 +115,8 @@ For more information, see the [paper](https://fc17.ifca.ai/bitcoin/papers/bitcoi
 
 ### SIGHASH\_NOINPUT/ANYPREVOUTS
 
-### Signature costruction 
+
+### Signature construction 
 Approaches based on constructing a public key so that only a single signature for it is known.
 
 Given a curve €C€, a generator point €G in C€, a private key €p€ and a nonce €k€, the public key €P in C€ is usually computed as €P=pG€ and, given a message €m€ a signature for it is created by computing €K=kG, s = k-hash(m, K)*p€ and constructing €(s, K, m)€, which along with €P€ enables the verification of the signature.

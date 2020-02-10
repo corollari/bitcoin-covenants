@@ -93,7 +93,7 @@ For more information, see [BIP119](https://github.com/bitcoin/bips/blob/master/b
 ### A primer on signatures
 The following is a short explanation on Schnorr signatures, the signatures used in Bitcoin are not of this type but they are conceptually similar:
 
-<!-- This description of schnorr signatures is not mathematically rigurous, as it is missing a ton of details, it is just meant to offer a didactic explanation, if you want to learn it properly check a proper source -->
+<!-- This description of schnorr signatures is not mathematically rigorous, as it is missing a ton of details, it is just meant to offer a didactic explanation, if you want to learn it properly check a proper source -->
 The main idea behind this signatures is that if you have a point $G$ of a elliptic curve and a number $n$ you can easily multiply them together to obtain another point in the curve $n \cdot G=N$ so that guessing $n$ from just $N$ will be really hard, next to impossible.
 
 With that in mind, we can take a number $p$ that will be our private key and calculate $p \cdot G=P$ to obtain a public key $P$ ($G$ is just a picked point in the curve), then given a transaction $tx$ we will sign it by picking a random number $k$, calculating $s = k - hash(tx) \cdot p$ and $K=k \cdot G$, and constructing a signature as $(s, K)$.
@@ -131,4 +131,4 @@ Given a transaction input
 
 ---
 
-This text is open source (MIT licensed), and available [on github](https://github.com/corollari/bitcoin-covenants). Contributions are welcome.
+This text is open source (MIT licensed), and available [on GitHub](https://github.com/corollari/bitcoin-covenants). Contributions are welcome.

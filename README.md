@@ -141,6 +141,9 @@ They point of this scheme is that when OP\_CHECKSIG is applied, it results in th
 You may wonder why do we use $1$ instead of $0$, as that would remove all the annoying "+1" from our calculations. The reason behind that is simply that the standard doesn't accept $k=1$.
 
 ### Multi-signature variant
+A different system to generate restricted covenants which can be used in the current Bitcoin protocol at the expense of requiring a trusted setup is one based on one-time keys, the main idea being that you can create a new private key, use it to sign a set of transactions and then destroy the key while keeping the signed transactions, therefore making it so the address associated with the key will only ever be able to spend it's funds through these transactions.
+
+This idea can be extended to multi-sigature setups where a trusted setup would be organized to build an n-of-n multisig along with all the transactions needed for the protocol, afterwards each of the participants of that protocol should delete their respective keys and, if at least one of the participants does so, it will be impossible to construct any new signatures for that multisig, therefore creating effective covenants. That said, if none of the signatures is destroyed and all the players cooperate, it should be possible to create new arbitrary signatures, destroying the whole point of the system. Due to this problem, this scheme requires trust in at least one of the participants of the trusted setup. 
 
 ---
 

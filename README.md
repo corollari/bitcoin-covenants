@@ -131,10 +131,16 @@ SIGHASH_NOINPUT solves this problem by allowing $hash(tx)$ to not commit to the 
 Check out [the bitcoin-dev post where this scheme was initially described](https://www.mail-archive.com/bitcoin-dev@lists.linuxfoundation.org/msg08075.html) for more details.
 
 ### Signature construction 
+Another similar scheme that trades the dependency on SIGHASH_NOINPUT for a dependency on any opcode that enables comparison against a part of a word on the stack (eg: OP_AND, OP_SUBSTR, OP_CAT...), while allowing the use of generalized covenants, is based on directly constructing the signature for an approved transaction, inside script:
+1. Inside script, obtain a transaction $tx$ which verifies all the properties that the covenant enforces
+2. Inside script, compute $hash(tx)+1$ and then apply OP\_CHECKSIG using $-G$ as the public key ($P$), $G$ as the nonce ($K$) and the value that we just computed as $s$. An alternative interpretation of this is that the private key $p$ is set to $-1$ and the nonce $k$ to $1$.
+3. If OP\_CHECKSIG succeeds the transaction being spent is the same as $tx$
 
+They point of this scheme is that when OP\_CHECKSIG is applied, it results in the equation $sG = G - hash(tx)(-G)$ being checked, which will only hold if and only if $s = hash(tx) + 1$, therefore by constructing $s = hash(tx_{constructed}) + 1$ we end up with $hash(tx_{constructed}) + 1 = hash(tx_{real}) + 1$, which is a direct equality check between the transaction inside script and the transaction being spent.
 
-### Multi-party Computation variant
+You may wonder why do we use $1$ instead of $0$, as that would remove all the annoying "+1" from our calculations. The reason behind that is simply that the standard doesn't accept $k=1$.
 
+### Multi-signature variant
 
 ---
 

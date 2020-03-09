@@ -138,7 +138,7 @@ Another similar scheme that trades the dependency on SIGHASH_NOINPUT for a depen
 
 They point of this scheme is that when OP\_CHECKSIG is applied, it results in the equation $sG = G - hash(tx)(-G)$ being checked, which will only hold if and only if $s = hash(tx) + 1$, therefore by constructing $s = hash(tx_{constructed}) + 1$ we end up with $hash(tx_{constructed}) + 1 = hash(tx_{real}) + 1$, which is a direct equality check between the transaction inside script and the transaction being spent.
 
-You may wonder why do we use $1$ instead of $0$, as that would remove all the annoying "+1" from our calculations. The reason behind that is simply that the standard doesn't accept $k=1$.
+You may wonder why do we use $k=1$ instead of $k=0$, as that would remove all the annoying "+1" from our calculations. The reason behind that is simply that the standard doesn't accept $k=0$.
 
 ### Multi-signature variant
 A different system to generate restricted covenants which can be used in the current Bitcoin protocol at the expense of requiring a trusted setup is one based on one-time keys, the main idea being that you can create a new private key, use it to sign a set of transactions and then destroy the key while keeping the signed transactions, therefore making it so the address associated with the key will only ever be able to spend it's funds through these transactions.

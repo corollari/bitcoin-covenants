@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Bitcoin Covenants</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="pandoc.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel='shortcut icon' href='favicon.png' />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Bitcoin Covenants</h1>
+</header>
+<h2 id="a-compilation-of-research-on-bitcoin-covenants" class="subtitle">A compilation of research on Bitcoin Covenants</h2>
+<h2 id="what-are-covenants">What are covenants?</h2>
+<p>Covenants, also known as spending constraints, is the name given to hypothetical bitcoin scripts that, when attached to UTXOs, would constrain the way these can be spent, for example restricting the addresses where such coins can be sent.</p>
+<p>Covenants which replicate themselves into the UTXOs where they are spent to are called recursive.</p>
+<h2 id="why-are-covenants-interesting">Why are covenants interesting?</h2>
+<p>Generalized covenants would enable a ton of new applications for scripts, such as:</p>
+<ul>
+<li>Scripts with unbounded length (including arbitrary sized multisigs)</li>
+<li>Turing complete contracts</li>
+<li>Transaction-level MAST (a really coarse-grained version of MAST that would split code paths at the script/transaction level)</li>
+<li>Drivechain-like two-way pegs</li>
+</ul>
+<p>Several more use cases are described <a href="https://utxos.org/uses/">on the OP_CTV page</a>.</p>
+<p><strong>Note</strong>: Not all the covenants described in this document are generalized ones, as several are heavily restricted, therefore the use-cases that each covenant provides are not all the same.</p>
+<h2 id="why-was-this-created">Why was this created?</h2>
+<p>Because I spent a whole month researching ways to create covenants with the current capabilities of Bitcoin’s Script and, after thinking I had found a beakthrough, I discovered that the same system I had thought about had already been described a few months ago in one of the thousands of posts of the bitcoin mailing list.<br />
+The goal of this website is to provide information on bitcoin covenants so that other people don’t end up wasting their time like I did.</p>
+<p>In other words:</p>
+<blockquote>
+<p>Those who don’t know history are doomed to repeat it</p>
+</blockquote>
+<h2 id="tldr">TL;DR</h2>
+<p>Bitcoin Cash and the Liquid sidechain have the capabilities needed for building generalized covenants.</p>
+<p>Bitcoin scripts can’t use generalized covenants but it’s possible to build a very restricted kind of covenants using trusted setups.</p>
+<p>Nevertheless, there’s several proposals for protocol upgrades that would enable more flexible covenants (yet not general) for Bitcoin, the most active ones being SIGHASH_ANYPREVOUT/NOINPUT and OP_CHECKTEMPLATEVERIFY.</p>
+<h2 id="opcode-based-covenants">Opcode based covenants</h2>
+<h3 id="op_checkoutputverify">OP_CHECKOUTPUTVERIFY</h3>
+<p>One of the earliest covenant proposals, <a href="https://maltemoeser.de/paper/covenants.pdf">this paper</a> describes a new opcode to be added to the Bitcoin protocol, this new opcode takes three arguments <code>(index, value, pattern)</code> and returns true if and only if the following conditions holdfor the <code>index</code>-th output of the transaction that is trying to spend the UTXO:</p>
+<ul>
+<li>The amount of bitcoin spent on that output is equal to <code>value</code></li>
+<li>The script attached to the output is equal to <code>pattern</code> except for the parts of <code>pattern</code> that contain placeholders for public keys and hashes.</li>
+</ul>
+<p>A technically-wrong but exemplary implementation of the opcode in python would be as follows:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">def</span> CheckOutputVerify(tx, index, value, pattern):</a>
+<a class="sourceLine" id="cb1-2" title="2">    output <span class="op">=</span> tx.outputs[index]</a>
+<a class="sourceLine" id="cb1-3" title="3">    <span class="cf">if</span> value <span class="op">!=</span> <span class="dv">0</span>:</a>
+<a class="sourceLine" id="cb1-4" title="4">        <span class="cf">if</span> output.value <span class="op">!=</span> value:</a>
+<a class="sourceLine" id="cb1-5" title="5">            <span class="cf">return</span> <span class="va">False</span></a>
+<a class="sourceLine" id="cb1-6" title="6">    <span class="cf">if</span> pattern <span class="op">!=</span> <span class="st">&quot;&quot;</span>:</a>
+<a class="sourceLine" id="cb1-7" title="7">        sanitizedPattern <span class="op">=</span> pattern.replace(<span class="st">&quot;PubKeyPlaceholder&quot;</span>, <span class="st">&quot;00000000&quot;</span>).replace(<span class="st">&quot;HashPlaceholder&quot;</span>, <span class="st">&quot;00000000&quot;</span>)</a>
+<a class="sourceLine" id="cb1-8" title="8">        mask <span class="op">=</span> replaceLocationsOfPlaceholdersWithZeroes(<span class="st">&quot;1&quot;</span><span class="op">*</span><span class="bu">len</span>(sanitizedPattern), [<span class="st">&quot;PubKeyPlaceholder&quot;</span>, <span class="st">&quot;HashPlaceholder&quot;</span>])</a>
+<a class="sourceLine" id="cb1-9" title="9">        <span class="cf">if</span> (output.script <span class="op">&amp;</span> mask) <span class="op">!=</span> sanitizedPattern:</a>
+<a class="sourceLine" id="cb1-10" title="10">            <span class="cf">return</span> <span class="va">False</span>    </a>
+<a class="sourceLine" id="cb1-11" title="11">    <span class="cf">return</span> <span class="va">True</span></a></code></pre></div>
+<p><strong>Note</strong>: This implementation is wrong due to the fact that the binary operations are replaced with string operations, which are themselves wrong in lots of ways (a mask of bytes is not constructed as a string of 1’s…) but as a pseudocode example it helps get the concept across</p>
+<p>This opcode would enable all kind of covenants, but nowadays it has been superseded by other systems and the probability of it ever getting deployed is null.</p>
+<h3 id="op_checkoutputshashverify">OP_CHECKOUTPUTSHASHVERIFY</h3>
+<p>This opcode, which was proposed as an extension to tapscript and aims at being as simple as possible, just serializes the outputs of a transaction, hashes the result twice and compares it with an argument:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">def</span> CheckOutputsHashVerify(tx, outputsHash):</a>
+<a class="sourceLine" id="cb2-2" title="2">    <span class="cf">if</span> sha256(sha256(tx.outputs)) <span class="op">==</span> outputsHash:</a>
+<a class="sourceLine" id="cb2-3" title="3">        <span class="cf">return</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb2-4" title="4">    <span class="cf">else</span>:</a>
+<a class="sourceLine" id="cb2-5" title="5">        <span class="cf">return</span> <span class="va">False</span></a></code></pre></div>
+<p>Something uncommon about this opcode is the fact that it’s argument is provided in Script after OP_CHECKOUTPUTSHASHVERIFY, not before. This behaviour is completely different from other opcodes’, which take arguments from the stack, in order to prevent the output hashes from being constructed in Script.</p>
+<p>The proposal was superseded by OP_CHECKTEMPLATEVERIFY, which modifies the behaviour to enforce non-malleability in transactions that spend UTXOs encumbered by the covenant and changes the deployment scheme to the classic NOP-replacement instead of a tapscrip extension.</p>
+<p>See the <a href="https://github.com/JeremyRubin/bips/blob/op-checkoutputshashverify/bip-coshv.mediawiki">BIP</a> for more details.</p>
+<h3 id="op_checktemplateverify">OP_CHECKTEMPLATEVERIFY</h3>
+<p>Previously known as OP_SECURETHEBAG, this is a new version of OP_CHECKOUTPUTSHASHVERIFY that enforces non-malleability of transactions by including several other parts of the transaction into the hash, whereas OP_CHECKOUTPUTSHASHVERIFY only included the outputs.</p>
+<p>Specifically, this opcode puts together the following fields:</p>
+<ul>
+<li>Version bits</li>
+<li>nLockTime</li>
+<li>Input’s scriptSig</li>
+<li>Number of inputs</li>
+<li>nSequence</li>
+<li>Number of outputs</li>
+<li>Outputs</li>
+<li>Index of the input being verified currently</li>
+</ul>
+<p>serializes them together, hashes them and compares the hash with an element in the stack, verifying the transaction if the values are equal.<br />
+<!--Some of the values are hashed before serialization, this is not specified here to keep things simple. Read the BIP!--></p>
+<p>For more information, see <a href="https://github.com/bitcoin/bips/blob/master/bip-0119.mediawiki">BIP119</a> and <a href="https://utxos.org/">the website dedicated to it</a>.</p>
+<h2 id="signature-based-covenants">Signature based covenants</h2>
+<h3 id="a-primer-on-signatures">A primer on signatures</h3>
+<p>The following is a short explanation on Schnorr signatures, the signatures used in Bitcoin are not of this type but they are conceptually similar:</p>
+<!-- This description of schnorr signatures is not mathematically rigorous, as it is missing a ton of details, it is just meant to offer a didactic explanation, if you want to learn it properly check a proper source -->
+<p>The main idea behind this signatures is that if you have a point <span class="math inline"><em>G</em></span> of a elliptic curve and a number <span class="math inline"><em>n</em></span> you can easily multiply them together to obtain another point in the curve <span class="math inline"><em>n</em> ⋅ <em>G</em> = <em>N</em></span> so that guessing <span class="math inline"><em>n</em></span> from just <span class="math inline"><em>N</em></span> will be really hard, next to impossible.</p>
+<p>With that in mind, we can take a number <span class="math inline"><em>p</em></span> that will be our private key and calculate <span class="math inline"><em>p</em> ⋅ <em>G</em> = <em>P</em></span> to obtain a public key <span class="math inline"><em>P</em></span> (<span class="math inline"><em>G</em></span> is just a picked point in the curve), then given a transaction <span class="math inline"><em>t</em><em>x</em></span> we will sign it by picking a random number <span class="math inline"><em>k</em></span>, calculating <span class="math inline"><em>s</em> = <em>k</em> − <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>) ⋅ <em>p</em></span> and <span class="math inline"><em>K</em> = <em>k</em> ⋅ <em>G</em></span>, and constructing a signature as <span class="math inline">(<em>s</em>, <em>K</em>)</span>.</p>
+<p>With these values, anyone else can verify that such signature is valid by checking that the equality <span class="math inline"><em>s</em> ⋅ <em>G</em> = <em>K</em> − <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>) ⋅ <em>P</em></span> holds, as only someone that knows the value <span class="math inline"><em>p</em></span> can construct such a signature due to the fact that if someone with no such knowledge tried to compute <span class="math inline"><em>s</em></span> they would need to compute the point <span class="math inline"><em>S</em> = <em>K</em> − <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>) ⋅ <em>P</em></span> and reverse the multiplication to obtain a number that when multiplied by <span class="math inline"><em>G</em></span> would yield <span class="math inline"><em>S</em></span>, which we assumed impossible in the first paragraph of this explanation.</p>
+<p>The main idea behind this category of covenants (signature based) is that, while transaction information is not directly available inside Script, it is used to construct the value <span class="math inline"><em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>)</span> used internally in OP_CHECKSIG, so it’s possible to perform comparisons against it indirectly through hacks in the signatures passed to OP_CHECKSIG.</p>
+<h3 id="op_checksigfromstack">OP_CHECKSIGFROMSTACK</h3>
+<p>At it’s heart, this opcode is really simple, it just takes a message, a public key and a signature and checks if the signature is valid. The interesting bit is that you can use this to compare any transaction built inside Script to the transaction that triggered the call and check if they are equal, therefore getting access to all the transaction data that is included inside the hash in OP_CHECKSIG signatures.</p>
+<p>More specifically, this would work by having the verification script (ScriptPubKey) of a UTXO construct (or verify) a serialized transaction, making sure that certain properties are met, such as the outputs being equal to ones defined previously for example, then hash such transaction and run OP_CHECKSIGFROMSTACK on the resulting hash and the values <span class="math inline">(<em>s</em>, <em>K</em>, <em>P</em>)</span> taken from the redeem script (ScriptSig) and computed off-chain by the user.</p>
+<p>If that signature is valid, then OP_CHECKSIG would be run with the same values except for the hash, that is the values <span class="math inline">(<em>s</em>, <em>K</em>, <em>P</em>)</span> used before. If this other opcode also returns true then we can be sure that the transaction spending the UTXO is the same as the one we have constructed (and have enforced our arbitrary conditions on). This is because <span class="math inline"><em>s</em> ⋅ <em>G</em> = <em>K</em> + <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em><sub><em>c</em><em>o</em><em>n</em><em>s</em><em>t</em><em>r</em><em>u</em><em>c</em><em>t</em><em>e</em><em>d</em></sub>) ⋅ <em>P</em></span> holds if and only if <span class="math inline"><em>s</em> ⋅ <em>G</em> = <em>K</em> + <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em><sub><em>r</em><em>e</em><em>a</em><em>l</em></sub>) ⋅ <em>P</em></span> holds.</p>
+<p>For more information, see the <a href="https://fc17.ifca.ai/bitcoin/papers/bitcoin17-final28.pdf">paper</a> and <a href="https://blockstream.com/2016/11/02/en-covenants-in-elements-alpha/">article</a> about it.</p>
+<p><strong>Note</strong>: This opcode has been implemented inside Elements, the blockchain layer upon which Blockstream’s Liquid sidechain is built. Furthermore, an opcode very similar to it called <a href="https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/op_checkdatasig.md">OP_CHECKDATASIG</a> has been implemented and deployed in Bitcoin Cash.</p>
+<h3 id="sighash_noinputanyprevouts">SIGHASH_NOINPUT/ANYPREVOUTS</h3>
+<p>A kind of somewhat restricted covenants can be created if SIGHASH_NOINPUT or ANYPREVOUTS is deployed. These covenants are based on creating several transactions beforehand and then constructing public keys for which only a single signature can be computed, making any money sent to that public key only spendable through the transactions defined before.</p>
+<p>In other words, someone could create a covenant using the following protocol:</p>
+<ol type="1">
+<li>Create a transaction <span class="math inline"><em>t</em><em>x</em></span> spending some funds</li>
+<li>Pick a number <span class="math inline"><em>s</em></span> and a point <span class="math inline"><em>K</em></span> in a deterministic and verifiable way (could also be constants)</li>
+<li>Calculate a public key by solving for <span class="math inline"><em>P</em></span> in the equation <span class="math inline"><em>s</em><em>G</em> = <em>K</em> − <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>)<em>P</em></span>, that is computing <span class="math inline"><em>P</em> = <em>h</em><em>a</em><em>s</em><em>h</em>(<em>x</em>)<sup> − 1</sup>(<em>K</em> − <em>s</em><em>G</em>)</span>.</li>
+<li>Send funds to an address where they can only be spent with a signature of <span class="math inline"><em>P</em></span>.</li>
+</ol>
+<p>Because the private key associated with <span class="math inline"><em>P</em></span> is unknown, it’s not possible to construct any signatures from it apart from the signature used to compute it, signature which signs the specific transaction <span class="math inline"><em>t</em><em>x</em></span>. Therefore <span class="math inline"><em>t</em><em>x</em></span> will be the only transaction that will be able to spend any funds locked in <span class="math inline"><em>P</em></span>.</p>
+<p>Now, the huge problem with this scheme is that to construct the transaction <span class="math inline"><em>t</em><em>x</em></span> , and by extension <span class="math inline"><em>P</em></span>, you need the txids of the transactions that send money to <span class="math inline"><em>P</em></span> (step 4), but to create these transactions you need to know <span class="math inline"><em>P</em></span>, thus you get locked in an unsolvable cyclic dependency.</p>
+<p>SIGHASH_NOINPUT solves this problem by allowing <span class="math inline"><em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>)</span> to not commit to the txids of the transaction, therefore enabling the computation of <span class="math inline"><em>P</em></span> without any other knowledge apart from the outputs of <span class="math inline"><em>t</em><em>x</em></span>.</p>
+<p>Check out <a href="https://www.mail-archive.com/bitcoin-dev@lists.linuxfoundation.org/msg08075.html">the bitcoin-dev post where this scheme was initially described</a> for more details.</p>
+<h3 id="signature-construction">Signature construction</h3>
+<p>Another similar scheme that trades the dependency on SIGHASH_NOINPUT for a dependency on any opcode that enables comparison against a part of a word on the stack (eg: OP_AND, OP_SUBSTR, OP_CAT…), while allowing the use of generalized covenants, is based on directly constructing the signature for an approved transaction, inside script:</p>
+<ol type="1">
+<li>Inside script, obtain a transaction <span class="math inline"><em>t</em><em>x</em></span> which verifies all the properties that the covenant enforces</li>
+<li>Inside script, compute <span class="math inline"><em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>) + 1</span> and then apply OP_CHECKSIG using <span class="math inline"> − <em>G</em></span> as the public key (<span class="math inline"><em>P</em></span>), <span class="math inline"><em>G</em></span> as the nonce (<span class="math inline"><em>K</em></span>) and the value that we just computed as <span class="math inline"><em>s</em></span>. An alternative interpretation of this is that the private key <span class="math inline"><em>p</em></span> is set to <span class="math inline"> − 1</span> and the nonce <span class="math inline"><em>k</em></span> to <span class="math inline">1</span>.</li>
+<li>If OP_CHECKSIG succeeds the transaction being spent is the same as <span class="math inline"><em>t</em><em>x</em></span></li>
+</ol>
+<p>They point of this scheme is that when OP_CHECKSIG is applied, it results in the equation <span class="math inline"><em>s</em><em>G</em> = <em>G</em> − <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>)( − <em>G</em>)</span> being checked, which will only hold if and only if <span class="math inline"><em>s</em> = <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em>) + 1</span>, therefore by constructing <span class="math inline"><em>s</em> = <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em><sub><em>c</em><em>o</em><em>n</em><em>s</em><em>t</em><em>r</em><em>u</em><em>c</em><em>t</em><em>e</em><em>d</em></sub>) + 1</span> we end up with <span class="math inline"><em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em><sub><em>c</em><em>o</em><em>n</em><em>s</em><em>t</em><em>r</em><em>u</em><em>c</em><em>t</em><em>e</em><em>d</em></sub>) + 1 = <em>h</em><em>a</em><em>s</em><em>h</em>(<em>t</em><em>x</em><sub><em>r</em><em>e</em><em>a</em><em>l</em></sub>) + 1</span>, which is a direct equality check between the transaction inside script and the transaction being spent.</p>
+<p>You may wonder why do we use <span class="math inline"><em>k</em> = 1</span> instead of <span class="math inline"><em>k</em> = 0</span>, as that would remove all the annoying “+1” from our calculations. The reason behind that is simply that the standard doesn’t accept <span class="math inline"><em>k</em> = 0</span>.</p>
+<h3 id="multi-signature-variant">Multi-signature variant</h3>
+<p>A different system to generate restricted covenants which can be used in the current Bitcoin protocol at the expense of requiring a trusted setup is one based on one-time keys, the main idea being that you can create a new private key, use it to sign a set of transactions and then destroy the key while keeping the signed transactions, therefore making it so the address associated with the key will only ever be able to spend it’s funds through these transactions.</p>
+<p>This idea can be extended to multi-sigature setups where a trusted setup would be organized to build an n-of-n multisig along with all the transactions needed for the protocol, afterwards each of the participants of that protocol should delete their respective keys and, if at least one of the participants does so, it will be impossible to construct any new signatures for that multisig, therefore creating effective covenants. That said, if none of the signatures is destroyed and all the players cooperate, it should be possible to create new arbitrary signatures, destroying the whole point of the system. Due to this problem, this scheme requires trust in at least one of the participants of the trusted setup.</p>
+<hr />
+<p>This text is open source (MIT licensed), and available <a href="https://github.com/corollari/bitcoin-covenants">on GitHub</a>. Contributions are welcome.</p>
+</body>
+</html>

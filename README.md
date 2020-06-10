@@ -1,7 +1,7 @@
 ## A compilation of research on Bitcoin Covenants {.subtitle}
 
 ## What are covenants?
-Covenants, also known as spending constraints, is the name given to hipothetical bitcoin scripts that when attached to UTXOs would constrain the way these can be spent, for example restricting the addresses where such coins can be sent.
+Covenants, also known as spending constraints, is the name given to hypothetical bitcoin scripts that, when attached to UTXOs, would constrain the way these can be spent, for example restricting the addresses where such coins can be sent.
 
 Covenants which replicate themselves into the UTXOs where they are spent to are called recursive.
 
